@@ -6,6 +6,7 @@ const Curso = getCursoModel();
 
 
 async function createContacto(data) {
+  console.log('createContacto', data);
   const curso = await Curso.findByPk(data.Cursos_id);
   if (!curso) {
     throw new Error('Curso no encontrado');

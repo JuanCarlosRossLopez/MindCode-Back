@@ -2,10 +2,12 @@ const contactoService = require('../services/contactService');
 
 exports.create = async (req, res) => {
   try {
-    const contacto = await contactoService.createContacto(req.body);
+    const data = req.body.mailData;
+    const contacto = await contactoService.createContacto(data);
     res.status(201).json(contacto);
   } catch (error) {
    - res.status(500).json({ message: error.message });
+   console.log(error);
   }
 };
 
