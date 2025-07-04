@@ -23,8 +23,16 @@ function initContactoModel(sequelize, Curso) {
     mensaje: {
       type: DataTypes.TEXT,
       allowNull: false
-    }
+    },
+    terminos_aceptados: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+
   });
+
+  
 
   // Relaciones
   Contacto.belongsTo(Curso, {
