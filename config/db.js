@@ -23,7 +23,7 @@ async function initializeDatabase() {
 
     // Conectar con Sequelize ya apuntando a la DB
     sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
-      host: DB_HOST,
+      host: DB_HOST,  
       dialect: 'mysql',
       logging: false,
     });

@@ -3,8 +3,9 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const { initializeDatabase, getSequelize } = require('./config/db');
 
-const { initCursoModel } = require('./models/cursoModel');
+const { initCursoModel, getCursoModel } = require('./models/cursoModel');
 const { initContactoModel } = require('./models/contactModel');
+const { initUserModel } = require('./models/user.model');
 
 dotenv.config();
 
@@ -23,17 +24,24 @@ app.use(express.urlencoded({ extended: true }));
   try {
     await initializeDatabase();
     const sequelize = getSequelize();
-    const Curso = initCursoModel(sequelize);
-    const Contacto = initContactoModel(sequelize, Curso);
+    initCursoModel(sequelize);
+    const Curso = getCursoModel();
+    initContactoModel(sequelize, Curso);
+    initUserModel(sequelize);
     await sequelize.sync();
     console.log('DB sync ok');
 
     // ahora que Curso NO es null, cargo rutas
     const cursosRoutes = require('./routes/cursosRoutes');
     const contactRoutes = require('./routes/contactRoutes');
-
+    const authRoutes = require('./routes/auth.routes');
+    const userRoutes = require('./routes/user.routes');
+    
     app.use('/api/cursos', cursosRoutes);
     app.use('/api/contacts', contactRoutes);
+    app.use('/api/auth', authRoutes);
+    app.use('/api/users', userRoutes);
+
   } catch (err) {
     console.error(err);
   }

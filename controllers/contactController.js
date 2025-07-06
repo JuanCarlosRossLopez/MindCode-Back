@@ -1,22 +1,27 @@
-const contactoService = require('../services/contactService');
+const { getContactoModel } = require('../models/contactModel');
+const { sendConfirmationMail } = require('../utils/mailer');
+
+const Contacto = getContactoModel();
 
 exports.create = async (req, res) => {
   try {
-    const data = req.body.mailData;
-    console.log('createContacto', data);
-    const contacto = await contactoService.createContacto(data);
-    res.status(201).json(contacto);
-  } catch (error) {
-   - res.status(500).json({ message: error.message });
-   console.log(error);
+    const contacto = await Contacto.create(req.body);
+
+    // Enviar correo
+    await sendConfirmationMail(req.body);
+
+    res.status(201).json({ message: 'Contacto creado y correo enviado', contacto });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error al crear contacto o enviar correo' });
   }
 };
 
 exports.findAll = async (req, res) => {
   try {
-    const contactos = await contactoService.getAllContactos();
+    const contactos = await Contacto.findAll();
     res.json(contactos);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ message: 'Error al obtener contactos' });
   }
 };
