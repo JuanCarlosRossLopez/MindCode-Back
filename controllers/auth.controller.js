@@ -18,3 +18,8 @@ exports.login = async (req, res) => {
     res.status(401).json({ message: err.message });
   }
 };
+
+exports.logout = (req, res) => {
+  res.status(200).json({ message: 'Sesión cerrada en cliente. El token ya no se usará.' });
+};
+
