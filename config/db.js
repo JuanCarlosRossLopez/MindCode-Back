@@ -1,36 +1,27 @@
-// Archivo: config/db.js
-const mysql = require('mysql2/promise');
 const { Sequelize } = require('sequelize');
 const dotenv = require('dotenv');
 dotenv.config();
-
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 let sequelize;
 
 async function initializeDatabase() {
   try {
-    // Conexión inicial sin especificar DB
-    const connection = await mysql.createConnection({
-      host: DB_HOST,
-      user: DB_USER,
-      password: DB_PASSWORD,
-    });
-
-    // Crear base de datos si no existe
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;`);
-    console.log(`Base de datos '${DB_NAME}' verificada/creada.`);
-
-    // Conectar con Sequelize ya apuntando a la DB
-    sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
-      host: DB_HOST,  
+    sequelize = new Sequelize(process.env.DATABASE_URL, {
       dialect: 'mysql',
-      logging: false,
+      dialectOptions: {
+        ssl: {
+          // PlanetScale no requiere certificados, solo SSL habilitado
+          minVersion: 'TLSv1.2'
+        }
+      },
+      logging: false
     });
 
+    await sequelize.authenticate();
+    console.log('Conexión a PlanetScale establecida correctamente');
     return sequelize;
   } catch (error) {
-    console.error('Error al crear la base de datos:', error);
+    console.error('Error al conectar con PlanetScale:', error);
     throw error;
   }
 }

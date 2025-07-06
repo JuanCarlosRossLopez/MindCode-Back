@@ -1,4 +1,3 @@
-// Archivo: models/contactModel.js
 const { DataTypes } = require('sequelize');
 
 let Contacto = null;
@@ -29,19 +28,21 @@ function initContactoModel(sequelize, Curso) {
       allowNull: false,
       defaultValue: false
     },
-
+    Cursos_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true // puede ser null si no se asocia
+    }
   });
 
-  
-
-  // Relaciones
+  // Relaciones sin constraints físicos (PlanetScale no los permite)
   Contacto.belongsTo(Curso, {
     foreignKey: 'Cursos_id',
-    onDelete: 'SET NULL',
+    constraints: false
   });
 
   Curso.hasMany(Contacto, {
-    foreignKey: 'Cursos_id'
+    foreignKey: 'Cursos_id',
+    constraints: false
   });
 
   return Contacto;
