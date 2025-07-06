@@ -5,13 +5,16 @@ const Contacto = getContactoModel();
 
 exports.create = async (req, res) => {
   try {
-    const {
+    // Si tu front manda { mailData: { … } }
+const {
   nombre_completo,
   correo,
   telefono,
   mensaje,
-  Cursos_id
+  Cursos_id,
+  terminos_aceptados
 } = req.body.mailData || {};
+
 
 
     console.log('Datos recibidos en backend:', req.body);
@@ -22,12 +25,14 @@ exports.create = async (req, res) => {
 }
 
     const contacto = await Contacto.create({
-      nombre_completo,
-      correo,
-      telefono,
-      mensaje,
-      Cursos_id: Cursos_id || null
-    });
+  nombre_completo,
+  correo,
+  telefono,
+  mensaje,
+  Cursos_id: Cursos_id || null,
+  terminos_aceptados: !!terminos_aceptados
+});
+
 
     // Enviar correo
     await sendConfirmationMail({
